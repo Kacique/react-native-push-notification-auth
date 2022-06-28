@@ -21,7 +21,7 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Register">
+        <Stack.Screen name="Register" options={{ headerShown: false }}>
           {(props) => (
             <Register {...props} userAuth={userAuth} userId={userId} />
           )}

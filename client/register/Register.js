@@ -13,6 +13,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 const Register = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [toggleRegister, setToggleRegister] = useState(false);
 
   const register = () => {
     createUserWithEmailAndPassword(props.userAuth, email, password);
@@ -24,24 +25,55 @@ const Register = (props) => {
 
   return (
     <View>
-      <Text>Register</Text>
-      <Text>Email</Text>
-      <TextInput
-        placeholder="Enter email"
-        value={email}
-        onChangeText={setEmail}
-      />
+      {toggleRegister ? (
+        <View>
+          <Text>Register</Text>
+          <Text>Email</Text>
+          <TextInput
+            placeholder="Enter email"
+            value={email}
+            onChangeText={setEmail}
+          />
 
-      <Text>Password</Text>
-      <TextInput
-        placeholder="Enter password"
-        value={password}
-        onChangeText={setPassword}
-      />
+          <Text>Password</Text>
+          <TextInput
+            placeholder="Enter password"
+            value={password}
+            onChangeText={setPassword}
+          />
+          <TouchableOpacity onPress={register}>
+            <Text>Submit</Text>
+          </TouchableOpacity>
 
-      <TouchableOpacity onPress={register}>
-        <Text>Submit</Text>
-      </TouchableOpacity>
+          <TouchableOpacity onPress={() => setToggleRegister(!toggleRegister)}>
+            <Text>Already Signed Up? Log In Here</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <View>
+          <Text>Login</Text>
+          <Text>Email</Text>
+          <TextInput
+            placeholder="Enter email"
+            value={email}
+            onChangeText={setEmail}
+          />
+
+          <Text>Password</Text>
+          <TextInput
+            placeholder="Enter password"
+            value={password}
+            onChangeText={setPassword}
+          />
+          <TouchableOpacity onPress={login}>
+            <Text>Submit</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => setToggleRegister(!toggleRegister)}>
+            <Text>Don't have an account? Signup</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };
