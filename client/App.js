@@ -8,6 +8,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import Register from "./register/Register";
 import Home from "./home/Home";
+import Profile from "./profile/Profile";
 //executes connection to Firebase
 import "./firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -32,7 +33,7 @@ function App() {
   console.log(userId);
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName="Register">
         <Stack.Screen name="Register" options={{ headerShown: false }}>
           {(props) => (
             <Register {...props} userAuth={userAuth} userId={userId} />
@@ -40,6 +41,11 @@ function App() {
         </Stack.Screen>
         <Stack.Screen name="Home" options={{ headerShown: false }}>
           {(props) => <Home {...props} userAuth={userAuth} userId={userId} />}
+        </Stack.Screen>
+        <Stack.Screen name="Profile" options={{ headerShown: false }}>
+          {(props) => (
+            <Profile {...props} userAuth={userAuth} userId={userId} />
+          )}
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
