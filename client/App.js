@@ -4,9 +4,10 @@ import { StyleSheet, Text, View } from "react-native";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+// import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import Register from "./register/Register";
-
+import Home from "./home/Home";
 //executes connection to Firebase
 import "./firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -18,6 +19,17 @@ function App() {
 
   const userAuth = getAuth();
 
+  useEffect(() => {
+    onAuthStateChanged(userAuth, (user) => {
+      if (user !== null) {
+        setUserId(user.uid);
+      } else {
+        setUserId("");
+      }
+    });
+  }, []);
+
+  console.log(userId);
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -25,6 +37,9 @@ function App() {
           {(props) => (
             <Register {...props} userAuth={userAuth} userId={userId} />
           )}
+        </Stack.Screen>
+        <Stack.Screen name="Home" options={{ headerShown: false }}>
+          {(props) => <Home {...props} userAuth={userAuth} userId={userId} />}
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>

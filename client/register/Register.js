@@ -23,6 +23,14 @@ const Register = (props) => {
     signInWithEmailAndPassword(props.userAuth, email, password);
   };
 
+  useEffect(() => {
+    if (props.userId !== "") {
+      props.navigation.navigate("Home");
+    } else {
+      setEmail("");
+      setPassword("");
+    }
+  }, [props.userId]);
   return (
     <View>
       {toggleRegister ? (
