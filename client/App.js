@@ -30,7 +30,6 @@ function App() {
     });
   }, []);
 
-  console.log(userId);
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Register">

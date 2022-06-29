@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -10,19 +10,35 @@ import {
 import { getDatabase, onValue, set, ref } from "firebase/database";
 
 const Home = (props) => {
+  const [user, setUser] = useState(null); //current
+  const [users, setUsers] = useState([]); //others
+
   const db = getDatabase();
-  const usersRef = ref(db, "users/" + props.userId);
+  const usersRef = ref(db, "users/");
 
   const signOut = () => {
     props.userAuth.signOut();
   };
 
   useEffect(() => {
-    console.log(usersRef);
     if (props.userId === "") {
       props.navigation.navigate("Register");
     }
   }, [props.userId]);
+
+  useEffect(() => {
+    return onValue(usersRef, (snapshot) => {
+      if (snapshot.val() !== null) {
+        const data = snapshot.val();
+        let arr = Object.keys(data).map((key) => data[key]);
+        //setTopThree(arr.splice(0, 3));
+        setUsers(arr.splice(0, 7));
+        console.log(data);
+      } else {
+        //setHighScoreList([]);
+      }
+    });
+  }, []);
   return (
     <View style={styles.container}>
       <Text style={styles.text}>We are home!</Text>
@@ -47,6 +63,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-start",
+    top: 150,
   },
   text: {
     fontSize: 20,

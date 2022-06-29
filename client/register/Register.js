@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
+  StyleSheet,
   Text,
   View,
   Alert,
@@ -32,7 +33,7 @@ const Register = (props) => {
     }
   }, [props.userId]);
   return (
-    <View>
+    <View style={styles.container}>
       {toggleRegister ? (
         <View>
           <Text>Register</Text>
@@ -87,3 +88,16 @@ const Register = (props) => {
 };
 
 export default Register;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "flex-start",
+    marginTop: 150,
+  },
+  text: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+});
