@@ -7,11 +7,13 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-import { getDatabase, onValue, set, ref } from "firebase/database";
+import { getDatabase, onValue, set, ref, get, child } from "firebase/database";
 
 const Home = (props) => {
-  const [user, setUser] = useState(null); //current
-  const [users, setUsers] = useState([]); //others
+  const [title, setTitle] = useState();
+  const [body, setBody] = useState();
+  // const [user, setUser] = useState(null); //current
+  // const [users, setUsers] = useState([]); //others
 
   const db = getDatabase();
   const usersRef = ref(db, "users/");
@@ -27,21 +29,34 @@ const Home = (props) => {
   }, [props.userId]);
 
   useEffect(() => {
-    return onValue(usersRef, (snapshot) => {
-      if (snapshot.val() !== null) {
-        const data = snapshot.val();
-        let arr = Object.keys(data).map((key) => data[key]);
-        //setTopThree(arr.splice(0, 3));
-        setUsers(arr.splice(0, 7));
-        console.log(data);
-      } else {
-        //setHighScoreList([]);
-      }
-    });
+    const dbRef = ref(getDatabase());
+    get(child(dbRef, `users/`))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          console.log(snapshot.val());
+        } else {
+          console.log("No data available");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }, []);
   return (
     <View style={styles.container}>
       <Text style={styles.text}>We are home!</Text>
+      <TextInput
+        placeholder="Enter Title"
+        value={title}
+        onChangeText={setTitle}
+      ></TextInput>
+      <TextInput
+        placeholder="Enter Message"
+        value={body}
+        onChangeText={setBody}
+      ></TextInput>
+
+      <Text></Text>
       <TouchableOpacity onPress={signOut}>
         <Text style={styles.text}>Sign Out</Text>
       </TouchableOpacity>
