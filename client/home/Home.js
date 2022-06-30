@@ -5,6 +5,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  FlatList,
 } from "react-native";
 
 import { getDatabase, onValue, set, ref, get, child } from "firebase/database";
@@ -12,8 +13,8 @@ import { getDatabase, onValue, set, ref, get, child } from "firebase/database";
 const Home = (props) => {
   const [title, setTitle] = useState();
   const [body, setBody] = useState();
-  // const [user, setUser] = useState(null); //current
-  // const [users, setUsers] = useState([]); //others
+
+  const [users, setUsers] = useState(); //others
 
   const db = getDatabase();
   const usersRef = ref(db, "users/");
@@ -29,19 +30,25 @@ const Home = (props) => {
   }, [props.userId]);
 
   useEffect(() => {
-    const dbRef = ref(getDatabase());
-    get(child(dbRef, `users/`))
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          console.log(snapshot.val());
-        } else {
-          console.log("No data available");
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    const db = getDatabase();
+    const dbRef = ref(db, "users/");
+
+    onValue(dbRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const returnedItems = snapshot.val();
+        let result = Object.keys(returnedItems).map(
+          (key) => returnedItems[key]
+        );
+        // console.log(result);
+        setUsers(result);
+        // setUsers([snapshot.val()]);
+        //console.log(users);
+      } else {
+        console.log("No data available");
+      }
+    });
   }, []);
+
   return (
     <View style={styles.container}>
       <Text style={styles.text}>We are home!</Text>
@@ -55,8 +62,17 @@ const Home = (props) => {
         value={body}
         onChangeText={setBody}
       ></TextInput>
-
-      <Text></Text>
+      <FlatList
+        data={users}
+        renderItem={({ item, index }) => (
+          <View key={index}>
+            <TouchableOpacity>
+              <Text>{item.username}</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        keyExtractor={(index) => index.toString()}
+      />
       <TouchableOpacity onPress={signOut}>
         <Text style={styles.text}>Sign Out</Text>
       </TouchableOpacity>
@@ -78,7 +94,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-start",
-    top: 150,
+    top: 10,
+  },
+  flatlistContainer: {
+    alignItems: "center",
+    justifyContent: "flex-start",
   },
   text: {
     fontSize: 20,
